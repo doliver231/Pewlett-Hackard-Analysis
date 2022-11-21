@@ -29,7 +29,7 @@ Using an Entity Relationship Diagram (ERD) by Quick DBD, we were able to map out
 
 ![ERD for our Employee Database](https://github.com/doliver231/Pewlett-Hackard-Analysis/blob/main/EmployeeDB.png)
 
-A Retirement Titles table was created to hold all the titles of employees who were born between January 1, 1952 and December 31, 1955. Because some employees may have multiple titles in the database, possibly due to promotions, the DISTINCT ON statement was used to create a table that contains the most recent title of each employee. Then, by using the COUNT() function, a table was created that held the number of retirement-age employees by most recent job title. Finally, because we want to include only current employees in our analysis, those employees who have already left the company were excluded.
+A Retirement Titles table was created to hold all the titles of employees who were born between January 1, 1952 and December 31, 1955. Because some employees may have multiple titles in the database, possibly due to promotions, the `DISTINCT ON`sql statement was used to create a table that contains the most recent title of each employee. Then, by using the `COUNT()`sql function, a table was created that held the number of retirement-age employees by most recent job title. Finally, because we want to include only current employees in our analysis, those employees who have already left the company were excluded.
 
 ### 1. Retiring Employee by Title
 
