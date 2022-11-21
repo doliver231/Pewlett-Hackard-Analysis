@@ -108,7 +108,7 @@ ORDER BY emp_no;
 
 ## Summary:
 
-As the company is preparing for the upcoming "silver tsunami" a good preparation and planning is important, especially when such a large number of the employees is involved. The analysis above give pretty good insight about the number of the employees that are about to retire and their respective titles. However, additional queries can be performed that will provide even more useful information for the company. If we joined another table with "departments" column, we will be able to see specifically which roles need to be filled per department. After removing the duplicates, with `DISTINCT ON` command, the table was ready to be used for additional queries. The first five rows out of 72,458 are shown:
+As the company is preparing for the upcoming "silver tsunami", a good preparation and planning is important, especially when such a large number of the employees is involved. The analysis above gives pretty good insight about the number of the employees that are about to retire and their respective titles. However, additional queries can be performed that will provide even more useful information for the company. If we joined another table with "departments" column, we will be able to see specifically which roles need to be filled per department. After removing the duplicates, with `DISTINCT ON` command, the table was ready to be used for additional queries. The first five rows out of 72,458 are shown:
 
 ```sql
 SELECT DISTINCT ON (rt.emp_no) 
