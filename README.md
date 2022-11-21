@@ -1,12 +1,10 @@
 # Pewlett-Hackard-Analysis
 
-## Overview of the analysis:
+## Overview
 
-To help future-proof Pewlett Hackard, we need to generate a list of all employees eligible for the retirement package. Using employee data in the form of CSV files, we need to upgrade the method to Structured Query Language (SQL) and build an employee database.
+As many are reaching the retirement age, the employees at Pewlett-Hackard need to be prepared for the upcoming “silver tsunami”. The company is looking toward the future by offering a retirement package for those who meet certain criteria, and thinking about which positions will need to be filled in the near future. 
 
-### Purpose
-
-As many are reaching the retirement age, the employees at Pewlett-Hackard need to be prepared for the upcoming “silver tsunami”. The company is looking toward the future by offering a retirement package for those who meet certain criteria, and thinking about which positions will need to be filled in the near future. In order to ensure a smooth transition, this analysis focuses on the following:
+Using Structured Query Language (SQL), we will be able to build an employee database to help meet the objectives at Pewlett-Hackard. In order to ensure a smooth transition, this analysis focuses on the following:
 
 * Identify how many retiring employees by their title.
 * Identify the employees eligible for participation in the mentorship program.
@@ -27,25 +25,33 @@ As many are reaching the retirement age, the employees at Pewlett-Hackard need t
 
 ## Results: 
 
-Using an Entity Relationship Diagram (ERD) using Quick DBD, we were about to map out the relationships among all the csv files to be analyzed. The primary, foreign, and unique were also identified in order to continue building a database using PostgreSQL.
+Using an Entity Relationship Diagram (ERD) by Quick DBD, we were able to map out the relationships among all the csv files to be analyzed. The primary, foreign, and unique keys were also identified in order to continue building a database using PostgreSQL.
 
 ![ERD for our Employee Database](https://github.com/doliver231/Pewlett-Hackard-Analysis/blob/main/EmployeeDB.png)
 
-1. The list of retiring employees
+A Retirement Titles table was created to hold all the titles of employees who were born between January 1, 1952 and December 31, 1955. Because some employees may have multiple titles in the database, possibly due to promotions, the DISTINCT ON statement was used to create a table that contains the most recent title of each employee. Then, by using the COUNT() function, a table was created that held the number of retirement-age employees by most recent job title. Finally, because we want to include only current employees in our analysis, those employees who have already left the company were excluded.
 
-The table includes employee number, first name, last name, title, from-date and to-date.
-The query returns 133,776 rows.
-The table displays a list of employees who is going to retire in the next few years.
-The list is long and extensive, yet at-a-glance analysis gives us some insights about the query. Some employees appear more than once due to change of title during their career at Pewlett-Hackard.
+### 1. Retiring Employee by Title
 
+The table includes employee number, first name, last name, title, from-date and to-date. It was created by joining two different tables together on the same primary key, employee number. The query returned 133,776 rows. Some employees appear more than once due to change of title during their career at Pewlett-Hackard.
 
-Figure 2: Table with the employee’s data that are retirement-ready
+```sql
+SELECT e.emp_no, 
+    e.first_name, 
+    e.last_name, 
+    t.title, 
+    t.from_date, 
+    t.to_date
+INTO retirement_titles
+FROM employees as e
+INNER JOIN titles as t
+ON e.emp_no = t.emp_no
+WHERE (birth_date BETWEEN '1952-01-01' AND '1955-12-31')
+ORDER BY emp_no;
+```
 
-Overview of the code
+![Retiring Employees by Title Output](https://github.com/doliver231/Pewlett-Hackard-Analysis/blob/main/Screenshots/Deliverable1_retirement_titles.png)
 
-To retrieve the data, two tables were merged together - employees and titles - with the inner join and filtered by birth date, that indicates who is about to retire in the next few years with the command WHERE (e.birth_date BETWEEN '1952-01-01' AND '1955-12-31').
-
-❗ The query has one drawback. It contains all the titles that employees acquired while working at Pewlett-Hackard over the years. This resulted in duplicates, some employees appear two times or more; therefore, the number of retiring employees (133,776) is huge and incorrect.
 
 2. The list of retiring employees without duplicates
 
