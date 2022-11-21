@@ -72,7 +72,7 @@ ORDER BY emp_no, to_date DESC;
 
 ### 3. Retiring Employees Grouped by Title
 
-This table was created to retrieve the number of employees by their most recent job title who are about to retire. Using `GROUP BY` and `COUNT()`, we were able to return a cohesive table with 7 rows showing the number of job retiring employees grouped by each specific title category. `ORDER BY` statement was also added to order the counts for each group in an ascending descending manner (`DESC`).
+This table was created to retrieve the number of employees by their most recent job title who are about to retire. Using `GROUP BY` and `COUNT()`, we were able to return a cohesive table with 7 rows showing the number of job retiring employees grouped by each specific title category. `ORDER BY` statement was also added to order the counts for each group in a descending manner (`DESC`).
 
 ```sql
 SELECT COUNT(title) as count, title
@@ -108,6 +108,56 @@ ORDER BY emp_no;
 
 ## Summary:
 
+As the company is preparing for the upcoming "silver tsunami" a good preparation and planning is important, especially when such a large number of the employees is involved. The analysis above give pretty good insight about the number of the employees that are about to retire and their respective titles. However, additional queries can be performed that will provide even more useful information for the company. If we joined another table with "departments" column, we will be able to see specifically which roles need to be filled per department. After removing the duplicates, with `DISTINCT ON` command, the table was ready to be used for additional queries. The first five rows out of 72,458 are shown:
+
+```sql
+SELECT DISTINCT ON (rt.emp_no) 
+	rt.emp_no,
+	rt.first_name,
+	rt.last_name,
+	rt.title,
+	d.dept_name
+INTO retirement_titles_dept
+FROM retirement_titles as rt
+INNER JOIN dept_employees as de
+ON (rt.emp_no = de.emp_no)
+INNER JOIN departments as d
+ON (d.dept_no = de.dept_no)
+WHERE rt.to_date = ('9999-01-01')
+ORDER BY rt.emp_no, rt.to_date DESC;
+```
+
+![by department](https://github.com/doliver231/Pewlett-Hackard-Analysis/blob/main/Screenshots/Deliverable3_departments.png)
+
 * How many roles will need to be filled as the "silver tsunami" begins to make an impact?
 
+To get the number of positions that will be open after the "silver tsunami" hits, an additional query was created that breaks down how many staff will retire per department. Since every department will be affected in some way, this query gives more precise numbers what each department can expect and how many roles will need to be filled. This query yields 38 rows.
+
+```sql
+SELECT COUNT(rtd.title) as count_titles,  
+	rtd.dept_name, 
+	rtd.title
+INTO rolls_to_fill
+FROM retirement_titles_dept as rtd
+GROUP BY rtd.dept_name, rtd.title
+ORDER BY count_titles DESC;
+```
+
+![rolls to fill](https://github.com/doliver231/Pewlett-Hackard-Analysis/blob/main/Screenshots/Deliverable3_rolls_to_fill.png)
+
 * Are there enough qualified, retirement-ready employees in the departments to mentor the next generation of Pewlett Hackard employees?
+
+An additional query was created that filters those employees on higher positions, assuming that those are qualified as mentors. The positions that seem to fall under the qualified category are Senior Engineer, Senior Staff, Technique Leader, and Manager. From the table we can see how many qualified employees are in each department to train the next generation.
+
+```sql
+SELECT  COUNT(rtd.title) as count_titles,
+	rtd.dept_name, 
+	rtd.title
+INTO qualified_staff
+FROM retirement_titles_dept as rtd
+WHERE rtd.title IN ('Senior Engineer', 'Manager', 'Senior Staff', 'Technique Leader')
+GROUP BY rtd.dept_name, rtd.title
+ORDER BY count_titles DESC;
+```
+
+![qualified staff](https://github.com/doliver231/Pewlett-Hackard-Analysis/blob/main/Screenshots/Deliverable3_qualified_mentors.png)

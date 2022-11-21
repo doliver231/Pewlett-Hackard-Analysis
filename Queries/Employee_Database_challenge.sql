@@ -58,6 +58,7 @@ INNER JOIN dept_employees as de
 ON (rt.emp_no = de.emp_no)
 INNER JOIN departments as d
 ON (d.dept_no = de.dept_no)
+WHERE rt.to_date = ('9999-01-01')
 ORDER BY rt.emp_no, rt.to_date DESC;
 
 -- DELIVERABLE 3: Query to find how many roles will need to be filled
@@ -67,7 +68,7 @@ SELECT COUNT(rtd.title) as count_titles,
 INTO rolls_to_fill
 FROM retirement_titles_dept as rtd
 GROUP BY rtd.dept_name, rtd.title
-ORDER BY rtd.dept_name DESC;
+ORDER BY count_titles DESC;
 
 -- DELIVERABLE 3: Query to find how many employees are qualified to mentor next generation
 SELECT  COUNT(rtd.title) as count_titles,
@@ -77,4 +78,4 @@ INTO qualified_staff
 FROM retirement_titles_dept as rtd
 WHERE rtd.title IN ('Senior Engineer', 'Manager', 'Senior Staff', 'Technique Leader')
 GROUP BY rtd.dept_name, rtd.title
-ORDER BY rtd.dept_name DESC;
+ORDER BY count_titles DESC;
